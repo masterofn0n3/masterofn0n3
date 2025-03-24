@@ -1,0 +1,8 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "logicgate",
+    srcs = ["and.go"],
+    importpath = "github.com/masterofn0n3/masterofn0n3/nes-emulator/pkg/logicgate",
+    visibility = ["//visibility:public"],
+)

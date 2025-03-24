@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "emulatord",
+    srcs = ["main.go"],
+    importpath = "github.com/masterofn0n3/masterofn0n3/nes-emulator/cmd/emulator",
+    visibility = ["//visibility:private"],
+    deps = ["//nes-emulator/pkg/logicgate"],
+)
+
+go_binary(
+    name = "emulator",
+    embed = [":emulatord"],
+    visibility = ["//visibility:public"],
+)
