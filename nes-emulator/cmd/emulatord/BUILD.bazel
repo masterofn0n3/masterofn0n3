@@ -13,3 +13,11 @@ go_binary(
     embed = [":emulatord"],
     visibility = ["//visibility:public"],
 )
+
+go_library(
+    name = "emulatord_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/masterofn0n3/masterofn0n3/nes-emulator/cmd/emulatord",
+    visibility = ["//visibility:private"],
+    deps = ["//nes-emulator/pkg/logicgate"],
+)

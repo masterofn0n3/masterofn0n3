@@ -7,5 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println(logicgate.AND(0, 1))
+	nandGate := logicgate.NAND{BASE: logicgate.BASE{A: 0, B: 0}}
+	fmt.Println(nandGate.Eval())
 }
