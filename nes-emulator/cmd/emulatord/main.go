@@ -8,7 +8,10 @@ import (
 
 func main() {
 	a := logicgate.Input{Value: 1}
-	b := logicgate.Input{Value: 1}
-	nand := logicgate.NAND(&a, &b)
-	fmt.Println(nand.Eval())
+	// b := logicgate.Input{Value: 0}
+	sel := logicgate.Input{Value: 1}
+
+	out1, out2 := logicgate.DMUX(&a, &sel)
+
+	fmt.Println(out1.Eval(), out2.Eval())
 }
