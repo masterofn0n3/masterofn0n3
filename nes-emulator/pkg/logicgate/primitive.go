@@ -4,67 +4,87 @@ type Gate interface {
 	Eval() uint8
 }
 
-type BASE struct {
-	A uint8
-	B uint8
+// Input represents a binary input signal (0 or 1)
+type Input struct {
+	Value uint8
 }
 
-// AND gate
-type AND struct {
-	BASE
-}
-
-func (g *AND) Eval() uint8 {
-	if g.A > 1 || g.B > 1 {
-		panic("Only accept binary")
+func (i *Input) Eval() uint8 {
+	if i.Value > 1 {
+		panic("Only binary values (0 or 1) allowed")
 	}
-	return g.A & g.B
+	return i.Value
 }
 
-// OR gate
-type OR struct {
-	BASE
+func (i *Input) Set(v uint8) {
+	i.Value = v
 }
 
-func (g *OR) Eval() uint8 {
-	if g.A > 1 || g.B > 1 {
-		panic("Only accept binary")
-	}
-	return g.A | g.B
+// NOT Gate
+type not struct {
+	In Gate
 }
 
-// XOR gate
-type XOR struct {
-	BASE
-}
-
-func (g *XOR) Eval() uint8 {
-	if g.A > 1 || g.B > 1 {
-		panic("Only accept binary")
-	}
-	return g.A ^ g.B
-}
-
-// NOT gate
-type NOT struct {
-	Val uint8
-}
-
-func (g *NOT) Eval() uint8 {
-	if g.Val > 1 {
-		panic("Only accept binary")
+func (g *not) Eval() uint8 {
+	in := g.In.Eval()
+	if in > 1 {
+		panic("Only binary input allowed")
 	}
 	// since we're using uint8 which have 8 bits, `^` flips all 8 bits, created unwanted result,
 	// so we need `& 1` to mask the `^` result, only left the LEAST SIGNIFICANT BIT
-	return ^g.Val & 1
+	return ^in & 1
 }
 
-type NAND struct {
-	BASE
+func NOT(in Gate) Gate {
+	return &not{In: in}
 }
 
-func (g *NAND) Eval() uint8 {
-	andGate := &AND{g.BASE}
+// AND Gate
+type and struct {
+	A, B Gate
+}
 
-	return (&NOT{Val: andGate.Eval()}).Eval()
+func (g *and) Eval() uint8 {
+	a := g.A.Eval()
+	b := g.B.Eval()
+	return a & b
+}
+
+func AND(a, b Gate) Gate {
+	return &and{A: a, B: b}
+}
+
+// OR Gate
+type or struct {
+	A, B Gate
+}
+
+func (g *or) Eval() uint8 {
+	a := g.A.Eval()
+	b := g.B.Eval()
+	return a | b
+}
+
+func OR(a, b Gate) Gate {
+	return &or{A: a, B: b}
+}
+
+// XOR Gate
+type xor struct {
+	A, B Gate
+}
+
+func (g *xor) Eval() uint8 {
+	a := g.A.Eval()
+	b := g.B.Eval()
+	return a ^ b
+}
+
+func XOR(a, b Gate) Gate {
+	return &xor{A: a, B: b}
+}
+
+// NAND Gate (NOT of AND)
+func NAND(a, b Gate) Gate {
+	return NOT(AND(a, b))
 }
